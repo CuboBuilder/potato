@@ -1,4 +1,4 @@
-name: Listen and Send
+name: Fetch IP Info
 on:
   push:
     branches:
@@ -8,17 +8,13 @@ on:
       - main
 
 jobs:
-  listen_and_send:
+  fetch_ip_info:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Netcat
-        run: sudo apt-get update && sudo apt-get install -y netcat
-
-      - name: Listen on port 8080
-        run: nc -l -p 8080 | while read line; do echo "Received: $line"; curl -X POST -d "$line" http://example.com; done
-
-  get_ip:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get Public IP
-        run: echo "Public IP: $(curl -s https://api.ipify.org)"
+      - name: Check out repository
+        uses: actions/checkout@v2
+      
+      - name: Fetch IP info
+        run: |
+          IP_INFO=$(curl -s https://2ip.ua/ru/api/ip.json)
+          echo "IP Info: $IP_INFO"
