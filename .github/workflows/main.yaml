@@ -1,4 +1,4 @@
-name: Listen on Port 8080
+name: Listen and Send
 on:
   push:
     branches:
@@ -8,11 +8,17 @@ on:
       - main
 
 jobs:
-  listen_on_port_8080:
+  listen_and_send:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Netcat
         run: sudo apt-get update && sudo apt-get install -y netcat
 
       - name: Listen on port 8080
-        run: nc -l -p 8080 | while read line; do echo $line; done
+        run: nc -l -p 8080 | while read line; do echo "Received: $line"; curl -X POST -d "$line" http://example.com; done
+
+  get_ip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Public IP
+        run: echo "Public IP: $(curl -s https://api.ipify.org)"
